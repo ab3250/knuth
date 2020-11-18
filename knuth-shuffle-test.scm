@@ -1,18 +1,9 @@
+(include "data.scm")
+
 (set! *random-state* (random-state-from-platform))
 
-(define-syntax rec
-  (syntax-rules ()
-    ((rec name value)
-     (let ()
-       (define name value)
-       name))))
 
 ;;list-set! list k val
-;; Macros are hygienic, you cannot clobber existing variables!
-(define-syntax-rule (swap! x y) ; -! is idomatic for mutation
-  (let ((tmp x))
-    (list-set! x y)
-    (list-set! y tmp)))
 
 (define (find-inc-indx indx lst)
   (let loop ((lst2 '()) (count 0))
@@ -39,12 +30,18 @@
 
 
 ;#|
-(let loop ((count 0))
-  (if (< count 1000000)
+(let loop ((count 0) (c (make-list 120 0)))
+  (if (< count 10000000)
       (begin
-	(display (knuth-shuffle (list 'A 'B 'C 'D 'E)))
+	(let ((val (knuth-shuffle (list 'A 'B 'C 'D 'E))))
+	  (loop (+ count 1) (if (equal? val (list 'A 'B 'D 'E 'C)) (find-inc-indx 119 c)c))))
+      (begin
 	(newline)
-	(loop (+ count 1)))))
+	(display c)
+	(newline))))
+
+
+
 ;|#
 ;(define lst (list 'A 'B 'C 'D 'E))
 ;(display(knuth-shuffle lst))
