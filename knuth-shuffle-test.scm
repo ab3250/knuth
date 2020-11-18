@@ -1,9 +1,18 @@
+
 (include "data.scm")
 
 (set! *random-state* (random-state-from-platform))
 
+(define hash-table (make-hash-table))
 
-;;list-set! list k val
+(display (hash-map->list cons hash-table))
+
+((lambda()
+  (let loop ((count 0))
+    (if (not(eqv? count 120))
+	(begin	  
+	  (hash-set! hash-table  (car (list-tail data count)) count)
+	  (loop (+ count 1)))))))
 
 (define (find-inc-indx indx lst)
   (let loop ((lst2 '()) (count 0))
@@ -11,11 +20,6 @@
 	(reverse lst2)
 	(loop
       	 (append (list (+ (list-ref lst count) (if (eqv? count indx)1 0))) lst2) (+ count 1)))))
-
-;(display (find-inc-indx 3 (find-inc-indx 3 '(0 0 0 0 0 0 0 0 0 0 0))))
-
-
-(newline)
 
 (define (knuth-shuffle lst)
   (let loop ((count 0))    
@@ -31,10 +35,10 @@
 
 ;#|
 (let loop ((count 0) (c (make-list 120 0)))
-  (if (< count 10000000)
+  (if (< count 120000000)
       (begin
-	(let ((val (knuth-shuffle (list 'A 'B 'C 'D 'E))))
-	  (loop (+ count 1) (if (equal? val (list 'A 'B 'D 'E 'C)) (find-inc-indx 119 c)c))))
+	(let ((val (knuth-shuffle (list #\A #\B #\C #\D #\E))))
+	  (loop (+ count 1) (find-inc-indx (hash-ref hash-table val) c))))
       (begin
 	(newline)
 	(display c)
@@ -43,9 +47,6 @@
 
 
 ;|#
-;(define lst (list 'A 'B 'C 'D 'E))
-;(display(knuth-shuffle lst))
-(newline)
 
 
 ;//knuth-shuffle recursive
