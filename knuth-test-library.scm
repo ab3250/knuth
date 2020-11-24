@@ -1,5 +1,14 @@
 ;;knuth-test-library.scm
 (use-modules (ice-9 textual-ports))
+
+;;count occurrences
+(define (count2 x L)
+  (if (null? L)
+      0
+      (if (eq? x (car L))
+	  (+ 1 (count2 x (cdr L)))
+	  (count2 x (cdr L)))))
+
 (define (permutations items)
 ;;
     (define (remove x lst)
@@ -60,3 +69,43 @@
                    (if (eq? tail new-tail) lis
                        (cons head new-tail)))
                  (recur tail))))))))
+
+(define (print-results lst)
+  (begin
+    (newline)
+    (displayln "knuth shuffle")
+    (newline)
+    (displayln "permutation  occurrences")
+    (map displayln (zip perms lst))
+    (newline)
+    (displayln (list "deck" deck))
+    (displayln (list "permutations" (length perms)))
+    (displayln (list "iterations" iterations))
+    (displayln (list "max" (apply max lst)))
+    (displayln (list "min" (apply min lst)))
+    (displayln (list "standard dev" (standard-deviation lst)))
+    (displayln (list "mean" (mean lst)))
+    (displayln (list "standard dev / mean" (/ (standard-deviation lst)  (mean lst))))
+    (newline)))
+
+
+#|
+;messy
+(define random-pool ((lambda()
+   (let ((in-port (open-file "rand.data" "r")))
+     (let loop ((data-list '()))
+       (if (and(< (length data-list) 100) (not(eof-object?(peek-char in-port))))
+	   (let* ((data-char (get-char in-port))(data-number (char->integer data-char)))
+	   (loop (if (char-numeric? data-char) (append data-list (list data-char)) data-list)))
+	   (begin
+	     (close-port in-port)
+	     (filter-map
+	      (lambda(x)
+		(let ((val (string->number (string x)  16)))
+		  (if(< val 5) val #f)))
+	      data-list))))))))
+
+;;;;	     (delete 4 (map (lambda(x)(string->number (string x)  16))  data-list) <))))))))
+
+;(display random-pool)
+|#
