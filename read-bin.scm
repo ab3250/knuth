@@ -43,14 +43,26 @@
                 (lp (cdr lis))))))))
 
 
-(display ((lambda()
+#|
+;messy
+(define random-pool ((lambda()
    (let ((in-port (open-file "rand.data" "r")))
      (let loop ((data-list '()))
-       (if (and(< (length data-list) 500) (not(eof-object?(peek-char in-port))))
+       (if (and(< (length data-list) 100) (not(eof-object?(peek-char in-port))))
 	   (let* ((data-char (get-char in-port))(data-number (char->integer data-char)))
 	   (loop (if (char-numeric? data-char) (append data-list (list data-char)) data-list)))
 	   (begin
 	     (close-port in-port)
-	     (delete 4 (map numerical-char->integer data-list) <))))))))
+	     (filter-map
+	      (lambda(x)
+		(let ((val (string->number (string x)  16)))
+		  (if(< val 5) val #f)))
+	      data-list))))))))
+
+;;;;	     (delete 4 (map (lambda(x)(string->number (string x)  16))  data-list) <))))))))
+
+;(display random-pool)
+|#
+
 
 ;

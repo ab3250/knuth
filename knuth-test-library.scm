@@ -43,7 +43,7 @@
   (let ([num (- (char->integer char) 48)]) ; 48 = (char->integer #\0)
     (if
      (or (< num 0) (> num 9))
-     (raise 'non-numerical-char #t)
+     (raise 'non-numerical-char)
      num)))
 
 ;(define (string->integer str)
@@ -89,23 +89,3 @@
     (newline)))
 
 
-#|
-;messy
-(define random-pool ((lambda()
-   (let ((in-port (open-file "rand.data" "r")))
-     (let loop ((data-list '()))
-       (if (and(< (length data-list) 100) (not(eof-object?(peek-char in-port))))
-	   (let* ((data-char (get-char in-port))(data-number (char->integer data-char)))
-	   (loop (if (char-numeric? data-char) (append data-list (list data-char)) data-list)))
-	   (begin
-	     (close-port in-port)
-	     (filter-map
-	      (lambda(x)
-		(let ((val (string->number (string x)  16)))
-		  (if(< val 5) val #f)))
-	      data-list))))))))
-
-;;;;	     (delete 4 (map (lambda(x)(string->number (string x)  16))  data-list) <))))))))
-
-;(display random-pool)
-|#
